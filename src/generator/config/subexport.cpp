@@ -742,10 +742,15 @@ void proxyToClash(std::vector<Proxy> &nodes, YAML::Node &yamlnode, const ProxyGr
         return;
     }
 
-    if(ext.clash_new_field_name)
-        yamlnode["proxies"] = proxies;
+    if(ext.clash_new_field_name) {
+        if(yamlnode["proxies"].IsDefined())
+            yamlnode["proxies"] = proxies;
+    }
     else
-        yamlnode["Proxy"] = proxies;
+    {
+        if(yamlnode["Proxy"].IsDefined())
+            yamlnode["Proxy"] = proxies;
+    }
 
 
     for(const ProxyGroupConfig &x : extra_proxy_group)
