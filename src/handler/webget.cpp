@@ -31,7 +31,7 @@ std::mutex cache_rw_lock;
 RWLock cache_rw_lock;
 
 //std::string user_agent_str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36";
-static auto user_agent_str = "subconverter/" VERSION " cURL/" LIBCURL_VERSION;
+static auto user_agent_str = "Clash/" VERSION " cURL/" LIBCURL_VERSION;
 
 struct curl_progress_data
 {
@@ -158,7 +158,14 @@ static int curlGet(const FetchArgument &argument, FetchResult &result)
     {
         if(startsWith(argument.proxy, "cors:"))
         {
-            header_list = curl_slist_append(header_list, "X-Requested-With: subconverter " VERSION);
+            // 检查客户端是否提供了 X-Requested-With 请求头
+            if(argument.request_headers && argument.request_headers->contains("X-Requested-With"))
+            {
+                // 转发客户端的 X-Requested-With 请求头
+                auto x_requested_with = argument.request_headers->at("X-Requested-With");
+                std::string header_value = "X-Requested-With: " + x_requested_with;
+                header_list = curl_slist_append(header_list, header_value.c_str());
+            } 
             new_url = argument.proxy.substr(5) + argument.url;
         }
         else
@@ -178,8 +185,8 @@ static int curlGet(const FetchArgument &argument, FetchResult &result)
         if(!argument.request_headers->contains("User-Agent"))
             curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, user_agent_str);
     }
-    header_list = curl_slist_append(header_list, "SubConverter-Request: 1");
-    header_list = curl_slist_append(header_list, "SubConverter-Version: " VERSION);
+    // header_list = curl_slist_append(header_list, "SubConverter-Request: 1");
+    // header_list = curl_slist_append(header_list, "SubConverter-Version: " VERSION);
     if(header_list)
         curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, header_list);
 
