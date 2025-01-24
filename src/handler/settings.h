@@ -18,7 +18,7 @@ struct Settings
 {
     //common settings
     std::string prefPath = "pref.ini", defaultExtConfig;
-    string_array excludeRemarks, includeRemarks;
+    string_array baseExcludeRemarks, excludeRemarks, includeRemarks;
     RulesetConfigs customRulesets;
     RegexMatchConfigs streamNodeRules, timeNodeRules;
     std::vector<RulesetContent> rulesetsContent;

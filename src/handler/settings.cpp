@@ -317,6 +317,8 @@ void readYAMLConf(YAML::Node &node)
         }
     }
     section["prepend_insert_url"] >> global.prependInsert;
+    if(section["base_exclude_remarks"].IsSequence())
+        section["base_exclude_remarks"] >> global.baseExcludeRemarks;
     if(section["exclude_remarks"].IsSequence())
         section["exclude_remarks"] >> global.excludeRemarks;
     if(section["include_remarks"].IsSequence())
@@ -595,6 +597,7 @@ void readTOMLConf(toml::value &root)
     find_if_exist(section_common,
                   "api_mode", global.APIMode,
                   "api_access_token", global.accessToken,
+                  "base_exclude_remarks", global.baseExcludeRemarks,
                   "exclude_remarks", global.excludeRemarks,
                   "include_remarks", global.includeRemarks,
                   "enable_insert", global.enableInsert,
@@ -838,6 +841,8 @@ void readConf()
     global.enableInsert = ini.get("enable_insert");
     ini.get_if_exist("insert_url", global.insertUrls);
     ini.get_bool_if_exist("prepend_insert_url", global.prependInsert);
+    if(ini.item_prefix_exist("base_exclude_remarks"))
+        ini.get_all("base_exclude_remarks", global.baseExcludeRemarks);
     if(ini.item_prefix_exist("exclude_remarks"))
         ini.get_all("exclude_remarks", global.excludeRemarks);
     if(ini.item_prefix_exist("include_remarks"))

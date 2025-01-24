@@ -592,6 +592,14 @@ std::string subconverter(RESPONSE_CALLBACK_ARGS)
         }
     }
 
+    // Insert global.baseExcludeRemarks at the beginning of lExcludeRemarks to ensure that the base_exclude_remarks in the preferences file always takes effect.
+    // ** Special custom modification for personal requirements. Delete if not needed. **
+    if (!global.baseExcludeRemarks.empty() &&
+        !std::all_of(global.baseExcludeRemarks.begin(), global.baseExcludeRemarks.end(), [](const std::string& str) { return str.empty(); })) 
+    {
+        lExcludeRemarks.insert(lExcludeRemarks.begin(), global.baseExcludeRemarks.begin(), global.baseExcludeRemarks.end());
+    }
+
     /// initialize script runtime
     if(authorized && !global.scriptCleanContext)
     {
