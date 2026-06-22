@@ -57,6 +57,11 @@ int uploadGist(std::string name, std::string path, std::string content, bool wri
         return -1;
     }
 
+    if(!path.size())
+    {
+        path = name; // Use name as the default value
+    }
+
     if (ini.enter_section(path) != 0) 
     {
         id = "";  // If the section doesn't exist, id is empty
@@ -66,10 +71,6 @@ int uploadGist(std::string name, std::string path, std::string content, bool wri
         id = ini.get("id");
     }
     username = ini.get("username");
-    if(!path.size())
-    {
-        path = name; // Use name as the default value
-    }
 
     if(!id.size())
     {
