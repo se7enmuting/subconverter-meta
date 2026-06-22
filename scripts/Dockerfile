@@ -33,10 +33,12 @@ RUN set -xe && \
     git clone https://github.com/ToruNiina/toml11 --branch="v4.3.0" --depth=1 && \
     cd toml11 && \
     cmake -DCMAKE_CXX_STANDARD=11 . && \
-    make install -j $THREADS && \
-    cd .. && \
-    git clone https://github.com/metacubex/subconverter --depth=1 && \
-    cd subconverter && \
+    make install -j $THREADS
+
+COPY . /subconverter
+
+RUN set -xe && \
+    cd /subconverter && \
     [ -n "$SHA" ] && sed -i 's/\(v[0-9]\.[0-9]\.[0-9]\)/\1-'"$SHA"'/' src/version.h;\
     python3 -m ensurepip && \
     python3 -m pip install gitpython && \
@@ -59,6 +61,6 @@ RUN echo $TZ > /etc/timezone
 
 # set entry
 WORKDIR /base
-CMD subconverter
+CMD ["subconverter"]
 
 EXPOSE 25500/tcp
